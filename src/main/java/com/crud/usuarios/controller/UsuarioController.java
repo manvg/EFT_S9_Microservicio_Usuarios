@@ -66,4 +66,18 @@ public class UsuarioController {
 
         return ResponseEntity.status(HttpStatus.OK).body(new ResponseModel(true,"El usuario ha sido eliminado con éxito."));
     }
+
+    @PostMapping("/login")
+    public ResponseEntity<Object> login(@RequestBody Usuario usuario) {
+        String email = usuario.getEmail();
+        String password = usuario.getcontrasena();
+
+        //Validar el usuario y contraseña
+        ResponseModel response = usuarioService.validarLogin(email, password);
+        if (response.getStatus()) {
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        }else{
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+        }
+    }
 }

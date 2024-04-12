@@ -3,6 +3,7 @@ package com.crud.usuarios.service;
 import java.util.List;
 import java.util.Optional;
 
+import com.crud.usuarios.model.ResponseModel;
 import com.crud.usuarios.model.Usuario;
 
 public interface UsuarioService {
@@ -11,4 +12,5 @@ public interface UsuarioService {
     Usuario createUsuario(Usuario usuario);
     Usuario updateUsuario(Integer id, Usuario usuario);
     void deleteUsuario(Integer id);
+    ResponseModel validarLogin(String email, String contrasena);
 }
