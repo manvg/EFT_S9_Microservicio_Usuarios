@@ -38,4 +38,11 @@ public class UsuarioServiceImpl implements UsuarioService {
             return null;
         }
     }
+
+    @Override
+    public void deleteUsuario(Integer id){
+        if (usuarioRepository.existsById(id)) {
+            usuarioRepository.deleteById(id);
+        }
+    }
 }
