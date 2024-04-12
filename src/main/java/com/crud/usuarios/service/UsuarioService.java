@@ -9,4 +9,5 @@ public interface UsuarioService {
     List<Usuario> getAllUsuarios();
     Optional<Usuario> getUsuarioById(Integer id);
     Usuario createUsuario(Usuario usuario);
+    Usuario updateUsuario(Integer id, Usuario usuario);
 }

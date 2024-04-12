@@ -29,4 +29,13 @@ public class UsuarioServiceImpl implements UsuarioService {
         return usuarioRepository.save(usuario);
     }
 
+    @Override
+    public Usuario updateUsuario(Integer id, Usuario usuario){
+        if (usuarioRepository.existsById(id)) {
+            usuario.setIdUsuario(id);
+            return usuarioRepository.save(usuario);
+        }else{
+            return null;
+        }
+    }
 }
