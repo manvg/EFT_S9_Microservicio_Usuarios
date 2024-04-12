@@ -22,26 +22,14 @@ public class Usuario {
     private String apellidoMaterno;
     @Column(name = "email")
     private String email;
-    @Column(name = "password")
-    private String password;
+    @Column(name = "contrasena")
+    private String contrasena;
     @Column(name = "telefono")
     private int telefono;
     @Column(name = "direccion")
     private String direccion;
     @Column(name = "id_perfil")
     private int idPerfil;
-
-    public Usuario(int idUsuario, String nombre, String apellidoPaterno, String apellidoMaterno, String email, String password, int telefono, String direccion, int idPerfil) {
-        this.idUsuario = idUsuario;
-        this.nombre = nombre;
-        this.apellidoPaterno = apellidoPaterno;
-        this.apellidoMaterno = apellidoMaterno;
-        this.email = email;
-        this.password = password;
-        this.telefono = telefono;
-        this.direccion = direccion;
-        this.idPerfil = idPerfil;
-    }
 
     public int getIdUsuario() {
         return idUsuario;
@@ -63,8 +51,8 @@ public class Usuario {
         return email;
     }
 
-    public String getPassword() {
-        return password;
+    public String getcontrasena() {
+        return contrasena;
     }
 
     public int getTelefono() {
@@ -99,8 +87,8 @@ public class Usuario {
         this.email = email;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public void setcontrasena(String contrasena) {
+        this.contrasena = contrasena;
     }
 
     public void setTelefono(int telefono) {
