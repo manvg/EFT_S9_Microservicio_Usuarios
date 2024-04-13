@@ -20,6 +20,8 @@ import com.crud.usuarios.model.ResponseModel;
 import com.crud.usuarios.model.Usuario;
 import com.crud.usuarios.service.UsuarioService;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("/usuarios")
 public class UsuarioController {
@@ -42,7 +44,7 @@ public class UsuarioController {
     }
 
     @PostMapping
-    public ResponseEntity<Object> createUsuario(@RequestBody Usuario usuario){
+    public ResponseEntity<Object> createUsuario(@RequestBody @Valid Usuario usuario){
         var response = usuarioService.createUsuario(usuario);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }

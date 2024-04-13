@@ -5,7 +5,11 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "usuario")
@@ -14,22 +18,43 @@ public class Usuario {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_usuario")
     private int idUsuario;
+
     @Column(name = "nombre")
+    @NotNull(message = "El campo nombre no puede ser nulo")
+    @NotBlank
     private String nombre;
+
     @Column(name = "apellido_paterno")
+    @NotNull(message = "El campo apellido paterno no puede ser nulo")
+    @NotBlank
     private String apellidoPaterno;
+
     @Column(name = "apellido_materno")
+    @NotNull(message = "El campo apellido materno no puede ser nulo")
+    @NotBlank
     private String apellidoMaterno;
+
     @Column(name = "email")
+    @NotNull(message = "El campo email no puede ser nulo")
+    @NotBlank
     private String email;
+
     @Column(name = "contrasena")
+    @NotNull(message = "El campo apellido paterno no puede ser nulo")
+    @NotBlank
     private String contrasena;
+
     @Column(name = "telefono")
     private int telefono;
+    
     @Column(name = "direccion")
+    @NotNull(message = "El campo direccion no puede ser nulo")
+    @NotBlank
     private String direccion;
-    @Column(name = "id_perfil")
-    private int idPerfil;
+
+    @ManyToOne(targetEntity = Perfil.class)
+    @JoinColumn(name = "id_perfil")
+    private Perfil perfil;
 
     public int getIdUsuario() {
         return idUsuario;
@@ -63,8 +88,8 @@ public class Usuario {
         return direccion;
     }
 
-    public int getIdPerfil() {
-        return idPerfil;
+    public Perfil getPerfil() {
+        return perfil;
     }
 
     public void setIdUsuario(int idUsuario) {
@@ -99,7 +124,7 @@ public class Usuario {
         this.direccion = direccion;
     }
 
-    public void setIdPerfil(int idPerfil) {
-        this.idPerfil = idPerfil;
+    public void setPerfil(Perfil perfil) {
+        this.perfil = perfil;
     }
 }
