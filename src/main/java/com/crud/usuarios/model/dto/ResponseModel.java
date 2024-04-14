@@ -1,4 +1,4 @@
-package com.crud.usuarios.model;
+package com.crud.usuarios.model.dto;
 
 public class ResponseModel {
     private boolean status;

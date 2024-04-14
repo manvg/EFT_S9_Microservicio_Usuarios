@@ -3,8 +3,8 @@ package com.crud.usuarios.service;
 import java.util.List;
 import java.util.Optional;
 
-import com.crud.usuarios.model.ResponseModel;
-import com.crud.usuarios.model.Usuario;
+import com.crud.usuarios.model.dto.ResponseModel;
+import com.crud.usuarios.model.entities.Usuario;
 
 public interface UsuarioService {
     List<Usuario> getAllUsuarios();

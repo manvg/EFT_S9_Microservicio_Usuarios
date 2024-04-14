@@ -6,8 +6,8 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.crud.usuarios.model.ResponseModel;
-import com.crud.usuarios.model.Usuario;
+import com.crud.usuarios.model.dto.ResponseModel;
+import com.crud.usuarios.model.entities.Usuario;
 import com.crud.usuarios.repository.UsuarioRepository;
 
 @Service
