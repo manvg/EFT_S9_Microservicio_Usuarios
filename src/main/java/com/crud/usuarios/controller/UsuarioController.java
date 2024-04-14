@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.crud.usuarios.model.dto.ResponseModel;
+import com.crud.usuarios.model.dto.UsuarioDto;
 import com.crud.usuarios.model.entities.Usuario;
 import com.crud.usuarios.service.UsuarioService;
 
@@ -29,7 +30,7 @@ public class UsuarioController {
     private UsuarioService usuarioService;
 
     @GetMapping
-    public List<Usuario> getAllUsuarios(){
+    public List<UsuarioDto> getAllUsuarios(){
         return usuarioService.getAllUsuarios();
     }
 
@@ -44,14 +45,14 @@ public class UsuarioController {
     }
 
     @PostMapping
-    public ResponseEntity<Object> createUsuario(@RequestBody @Valid Usuario usuario){
+    public ResponseEntity<Object> createUsuario(@RequestBody @Valid UsuarioDto usuario){
         var response = usuarioService.createUsuario(usuario);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Object> updateUsuario(@PathVariable Integer id, @RequestBody Usuario usuario){
-        var response = usuarioService.updateUsuario(id, usuario);
+    public ResponseEntity<Object> updateUsuario(@PathVariable Integer id, @RequestBody UsuarioDto usuarioDto){
+        var response = usuarioService.updateUsuario(id, usuarioDto);
         if (response == null) {
             return ResponseEntity.status(HttpStatus.OK).body(new ResponseModel(false,"El usuario ingresado no existe."));
         }
@@ -70,9 +71,9 @@ public class UsuarioController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Object> login(@RequestBody Usuario usuario) {
-        String email = usuario.getEmail();
-        String password = usuario.getcontrasena();
+    public ResponseEntity<Object> login(@RequestBody UsuarioDto usuarioDto) {
+        String email = usuarioDto.getEmail();
+        String password = usuarioDto.getContrasena();
 
         //Validar el usuario y contraseña
         ResponseModel response = usuarioService.validarLogin(email, password);

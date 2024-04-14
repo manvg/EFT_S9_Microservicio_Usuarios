@@ -2,22 +2,28 @@ package com.crud.usuarios.service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.crud.usuarios.model.dto.ResponseModel;
+import com.crud.usuarios.model.dto.UsuarioDto;
 import com.crud.usuarios.model.entities.Usuario;
 import com.crud.usuarios.repository.UsuarioRepository;
+import com.crud.usuarios.utilities.UsuarioMapper;
 
 @Service
 public class UsuarioServiceImpl implements UsuarioService {
     @Autowired
     private UsuarioRepository usuarioRepository;
+    @Autowired
+    private UsuarioMapper usuarioMapper;
 
     @Override
-    public List<Usuario> getAllUsuarios(){
-        return usuarioRepository.findAll();
+    public List<UsuarioDto> getAllUsuarios(){
+        List<Usuario> usuarios = usuarioRepository.findAll();
+        return usuarios.stream().map(usuarioMapper::convertirADTO).collect(Collectors.toList());
     }
 
     @Override
@@ -26,13 +32,15 @@ public class UsuarioServiceImpl implements UsuarioService {
     }
 
     @Override
-    public Usuario createUsuario(Usuario usuario){
+    public Usuario createUsuario(UsuarioDto usuarioDto){
+        Usuario usuario = usuarioMapper.convertirAEntity(usuarioDto);
         return usuarioRepository.save(usuario);
     }
 
     @Override
-    public Usuario updateUsuario(Integer id, Usuario usuario){
+    public Usuario updateUsuario(Integer id, UsuarioDto usuarioDto){
         if (usuarioRepository.existsById(id)) {
+            Usuario usuario = usuarioMapper.convertirAEntity(usuarioDto);
             usuario.setIdUsuario(id);
             return usuarioRepository.save(usuario);
         }else{
