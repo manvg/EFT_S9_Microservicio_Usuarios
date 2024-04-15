@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.crud.usuarios.model.dto.LoginDto;
 import com.crud.usuarios.model.dto.ResponseModel;
 import com.crud.usuarios.model.dto.UsuarioDto;
 import com.crud.usuarios.service.Usuario.UsuarioService;
@@ -68,11 +69,11 @@ public class UsuarioController {
 
     //Login usuario
     @PostMapping("/login")
-    public ResponseEntity<Object> login(@RequestBody UsuarioDto usuarioDto) {
+    public ResponseEntity<Object> login(@RequestBody @Valid LoginDto loginDto) {
         log.info("POST /usuarios/login");
         log.info("Inicio login...");
-        String email = usuarioDto.getEmail();
-        String password = usuarioDto.getContrasena();
+        String email = loginDto.getEmail();
+        String password = loginDto.getContrasena();
 
         //Validar el usuario y contraseña
         ResponseModel response = usuarioService.validarLogin(email, password);
