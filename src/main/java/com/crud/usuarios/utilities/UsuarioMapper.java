@@ -14,11 +14,11 @@ public class UsuarioMapper {
         this.modelMapper = modelMapper;
     }
     
-    public UsuarioDto convertirADTO(Usuario atencionMedica) {
-        return modelMapper.map(atencionMedica, UsuarioDto.class);
+    public UsuarioDto convertirADTO(Usuario usuario) {
+        return modelMapper.map(usuario, UsuarioDto.class);
     }
 
-    public Usuario convertirAEntity(UsuarioDto atencionMedicaDto){
-        return modelMapper.map(atencionMedicaDto, Usuario.class);
+    public Usuario convertirAEntity(UsuarioDto usuarioDto){
+        return modelMapper.map(usuarioDto, Usuario.class);
     }
 }

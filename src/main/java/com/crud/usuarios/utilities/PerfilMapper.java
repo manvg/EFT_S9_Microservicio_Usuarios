@@ -12,11 +12,11 @@ public class PerfilMapper {
     public PerfilMapper(ModelMapper modelMapper) {
         this.modelMapper = modelMapper;
     }
-    public PerfilDto convertirADTO(Perfil atencionMedica) {
-        return modelMapper.map(atencionMedica, PerfilDto.class);
+    public PerfilDto convertirADTO(Perfil perfil) {
+        return modelMapper.map(perfil, PerfilDto.class);
     }
 
-    public Perfil convertirAEntity(PerfilDto atencionMedicaDto){
-        return modelMapper.map(atencionMedicaDto, Perfil.class);
+    public Perfil convertirAEntity(PerfilDto perfilDto){
+        return modelMapper.map(perfilDto, Perfil.class);
     }
 }
