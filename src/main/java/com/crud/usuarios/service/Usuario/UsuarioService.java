@@ -1,4 +1,4 @@
-package com.crud.usuarios.service;
+package com.crud.usuarios.service.Usuario;
 
 import java.util.List;
 import java.util.Optional;

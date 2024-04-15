@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.crud.usuarios.model.dto.ResponseModel;
 import com.crud.usuarios.model.dto.UsuarioDto;
-import com.crud.usuarios.service.UsuarioService;
+import com.crud.usuarios.service.Usuario.UsuarioService;
 
 import jakarta.validation.Valid;
 

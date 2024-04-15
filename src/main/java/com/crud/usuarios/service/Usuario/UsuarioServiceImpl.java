@@ -1,4 +1,4 @@
-package com.crud.usuarios.service;
+package com.crud.usuarios.service.Usuario;
 
 import java.util.List;
 import java.util.Optional;
@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 import com.crud.usuarios.model.dto.ResponseModel;
 import com.crud.usuarios.model.dto.UsuarioDto;
 import com.crud.usuarios.model.entities.Usuario;
-import com.crud.usuarios.repository.UsuarioRepository;
+import com.crud.usuarios.repository.Usuario.UsuarioRepository;
 import com.crud.usuarios.utilities.UsuarioMapper;
 
 @Service

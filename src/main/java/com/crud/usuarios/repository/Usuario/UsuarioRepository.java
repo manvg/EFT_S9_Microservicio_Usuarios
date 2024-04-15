@@ -1,4 +1,4 @@
-package com.crud.usuarios.repository;
+package com.crud.usuarios.repository.Usuario;
 
 import java.util.Optional;
 
