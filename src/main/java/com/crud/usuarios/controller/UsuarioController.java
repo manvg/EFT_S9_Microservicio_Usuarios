@@ -1,9 +1,6 @@
 package com.crud.usuarios.controller;
 
 import java.util.List;
-import java.util.Optional;
-
-import org.apache.catalina.connector.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,6 +29,9 @@ public class UsuarioController {
     @Autowired
     private UsuarioService usuarioService;
 
+    //---------MÉTODOS GET---------//
+    
+    //Obtener lista completa de usuarios
     @GetMapping
     public List<UsuarioDto> getAllUsuarios(){
         log.info("GET /usuarios");
@@ -39,6 +39,7 @@ public class UsuarioController {
         return usuarioService.getAllUsuarios();
     }
 
+    //Obtener usuario por su id
     @GetMapping("/{id}")
     public ResponseEntity<Object> getUsuarioById(@PathVariable Integer id){
         log.info("GET /usuarios/" + id);
@@ -46,12 +47,14 @@ public class UsuarioController {
         var response = usuarioService.getUsuarioById(id);
         if (response.isEmpty()) {
             log.error("No se encontro usuario con id " + id);
-            return ResponseEntity.status(HttpStatus.OK).body(new ResponseModel(false,"El usuario ingresado no existe."));
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseModel(false,"El usuario ingresado no existe."));
         }
         log.info("Usuario encontrado con éxito. Id: " + id);
         return ResponseEntity.ok(response);
     }
 
+    //---------MÉTODOS POST---------//
+    //Crear usuario
     @PostMapping
     public ResponseEntity<Object> createUsuario(@RequestBody @Valid UsuarioDto usuario){
         log.info("POST /usuarios/createUsuario");
@@ -59,37 +62,11 @@ public class UsuarioController {
 
         var response = usuarioService.createUsuario(usuario);
 
-        log.info("Usuario creado con éxito. Id: " + response.getIdUsuario());
+        log.info(response.getMessage());
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Object> updateUsuario(@PathVariable Integer id, @RequestBody UsuarioDto usuarioDto){
-        log.info("PUT /usuarios/"+id);
-        log.info("Actualizando usuario con id " + id);
-        var response = usuarioService.updateUsuario(id, usuarioDto);
-        if (response == null) {
-            log.error("No existe un usuario con id " + id);
-            return ResponseEntity.status(HttpStatus.OK).body(new ResponseModel(false,"El usuario ingresado no existe."));
-        }
-        log.info("Usuario actualizado con éxito. Id " + id);
-        return ResponseEntity.status(HttpStatus.OK).body(response);
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Object> deleteUsuario(@PathVariable Integer id){
-        log.info("DELETE /usuarios/"+id);
-        log.info("Eliminando usuario con id " + id);
-        if (usuarioService.getUsuarioById(id).isEmpty()) {
-            log.error("No existe un usuario con id " + id);
-            return ResponseEntity.status(HttpStatus.OK).body(new ResponseModel(false,"El usuario ingresado no existe."));
-        }
-        //Eliminar usuario
-        usuarioService.deleteUsuario(id);
-        log.info("Usuario eliminado con éxito");
-        return ResponseEntity.status(HttpStatus.OK).body(new ResponseModel(true,"El usuario ha sido eliminado con éxito."));
-    }
-
+    //Login usuario
     @PostMapping("/login")
     public ResponseEntity<Object> login(@RequestBody UsuarioDto usuarioDto) {
         log.info("POST /usuarios/login");
@@ -107,5 +84,35 @@ public class UsuarioController {
             log.error(response.getMessage());
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
         }
+    }
+
+    //---------MÉTODOS PUT---------//
+    //Actualizar usuario
+    @PutMapping("/{id}")
+    public ResponseEntity<Object> updateUsuario(@PathVariable Integer id, @RequestBody @Valid UsuarioDto usuarioDto){
+        log.info("PUT /usuarios/"+id);
+        log.info("Actualizando usuario con id " + id);
+        var response = usuarioService.updateUsuario(id, usuarioDto);
+        if (response == null) {
+            log.error("No existe un usuario con id " + id);
+            return ResponseEntity.status(HttpStatus.OK).body(new ResponseModel(false,"El usuario ingresado no existe."));
+        }
+        log.info("Usuario actualizado con éxito. Id " + id);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    //---------MÉTODOS DELETE---------//
+    //Eliminar usuario
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Object> deleteUsuario(@PathVariable Integer id){
+        log.info("DELETE /usuarios/"+id);
+        log.info("Eliminando usuario con id " + id);
+  
+        var response = usuarioService.deleteUsuario(id);
+        if (!response.getStatus()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+        log.info("Usuario eliminado con éxito");
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 }

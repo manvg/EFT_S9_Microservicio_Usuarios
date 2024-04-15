@@ -10,8 +10,8 @@ import com.crud.usuarios.model.entities.Usuario;
 public interface UsuarioService {
     List<UsuarioDto> getAllUsuarios();
     Optional<Usuario> getUsuarioById(Integer id);
-    Usuario createUsuario(UsuarioDto usuario);
-    Usuario updateUsuario(Integer id, UsuarioDto usuario);
-    void deleteUsuario(Integer id);
+    ResponseModel createUsuario(UsuarioDto usuario);
+    ResponseModel updateUsuario(Integer id, UsuarioDto usuario);
+    ResponseModel deleteUsuario(Integer id);
     ResponseModel validarLogin(String email, String contrasena);
 }
