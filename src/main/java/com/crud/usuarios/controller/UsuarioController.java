@@ -22,9 +22,8 @@ import com.crud.usuarios.advice.BusinessException;
 import com.crud.usuarios.advice.GeneralNotFoundException;
 import com.crud.usuarios.model.dto.LoginDto;
 import com.crud.usuarios.model.dto.ResponseModel;
-import com.crud.usuarios.model.dto.UsuarioDto;
+import com.crud.usuarios.model.entities.Usuario;
 import com.crud.usuarios.service.Usuario.UsuarioService;
-import com.crud.usuarios.utilities.UsuarioMapper;
 
 import jakarta.validation.Valid;
 
@@ -37,37 +36,34 @@ public class UsuarioController {
     private static final Logger log = LoggerFactory.getLogger(UsuarioController.class);
     @Autowired
     private UsuarioService usuarioService;
-    @Autowired
-    private UsuarioMapper usuarioMapper;
 
     //---------MÉTODOS GET---------//
     @GetMapping
-    public CollectionModel<EntityModel<UsuarioDto>> getAllUsuarios() {
-        List<UsuarioDto> usuarios = usuarioService.getAllUsuarios();
+    public CollectionModel<EntityModel<Usuario>> getAllUsuarios() {
+        List<Usuario> usuarios = usuarioService.getAllUsuarios();
         log.info("GET /usuarios");
         log.info("Retornando todos los usuarios");
-        List<EntityModel<UsuarioDto>> usuariosResources = usuarios.stream()
+        List<EntityModel<Usuario>> usuariosResources = usuarios.stream()
             .map( usuario -> EntityModel.of(usuario,
                 WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(this.getClass()).getUsuarioById(usuario.getIdUsuario())).withSelfRel()
             ))
             .collect(Collectors.toList());
 
         WebMvcLinkBuilder linkTo = WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(this.getClass()).getAllUsuarios());
-        CollectionModel<EntityModel<UsuarioDto>> resources = CollectionModel.of(usuariosResources, linkTo.withRel("usuarios"));
+        CollectionModel<EntityModel<Usuario>> resources = CollectionModel.of(usuariosResources, linkTo.withRel("usuarios"));
 
         return resources;
     }
 
     @GetMapping("/{id}")
-    public EntityModel<UsuarioDto> getUsuarioById(@PathVariable Integer id){
+    public EntityModel<Usuario> getUsuarioById(@PathVariable Integer id){
         log.info("GET /usuarios/" + id);
         log.info("Obteniendo usuario por id " + id);
         var usuario = usuarioService.getUsuarioById(id);
 
         if (!usuario.isEmpty()) {
             log.info("Usuario encontrado. Id " + id);
-            var usuarioDto = usuarioMapper.convertirADTO(usuario.get());
-            return EntityModel.of(usuarioDto,
+            return EntityModel.of(usuario.get(),
                 WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(this.getClass()).getUsuarioById(id)).withSelfRel(),
                 WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(this.getClass()).getAllUsuarios()).withRel("all-usuarios"));
         } else {
@@ -78,20 +74,20 @@ public class UsuarioController {
 
     //---------MÉTODOS POST---------//
     @PostMapping
-    public EntityModel<UsuarioDto> createUsuario(@RequestBody @Valid UsuarioDto usuarioDto){
+    public EntityModel<Usuario> createUsuario(@RequestBody @Valid Usuario usuario){
         log.info("POST /usuarios/createUsuario");
         log.info("Creando usuario...");
-        log.info("Validando email " + usuarioDto.getEmail());
-        var validacionEmail = usuarioService.validarUsuarioPorEmail(usuarioDto.getEmail());
+        log.info("Validando email " + usuario.getEmail());
+        var validacionEmail = usuarioService.validarUsuarioPorEmail(usuario.getEmail());
         if (!validacionEmail.getStatus()) {
             log.error(null);
             throw new BusinessException("EMAIL_EXISTE", validacionEmail.getMessage());
         }
         
-        var response = usuarioService.createUsuario(usuarioDto);
+        var response = usuarioService.createUsuario(usuario);
         log.info("Usuario creado con exito. Id: " + response.getIdUsuario());
         return EntityModel.of(response,
-            WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(this.getClass()).createUsuario(usuarioDto)).withSelfRel(),
+            WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(this.getClass()).createUsuario(usuario)).withSelfRel(),
             WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(this.getClass()).getUsuarioById(response.getIdUsuario())).withRel("get-usuario-by-id"));
 
     }
@@ -119,18 +115,18 @@ public class UsuarioController {
     //---------MÉTODOS PUT---------//
     //Actualizar usuario
     @PutMapping("/{id}")
-    public EntityModel<UsuarioDto> updateUsuario(@PathVariable Integer id, @RequestBody @Valid UsuarioDto usuarioDto){
+    public EntityModel<Usuario> updateUsuario(@PathVariable Integer id, @RequestBody @Valid Usuario usuario){
         log.info("PUT /usuarios/"+id);
         log.info("Actualizando usuario con id " + id);
 
-        var response = usuarioService.updateUsuario(id, usuarioDto);
+        var response = usuarioService.updateUsuario(id, usuario);
         if (response == null) {
             log.error("Usuario no encontrado. Id " + id);
             throw new GeneralNotFoundException(String.valueOf(id));
         }
         log.info("Usuario creado con exito. Id: " + response.getIdUsuario());
         return EntityModel.of(response,
-            WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(this.getClass()).createUsuario(usuarioDto)).withSelfRel(),
+            WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(this.getClass()).createUsuario(usuario)).withSelfRel(),
             WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(this.getClass()).getUsuarioById(response.getIdUsuario())).withRel("get-usuario-by-id"));
     }
 

@@ -16,8 +16,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.crud.usuarios.model.dto.PerfilDto;
 import com.crud.usuarios.model.dto.ResponseModel;
+import com.crud.usuarios.model.entities.Perfil;
 import com.crud.usuarios.service.Perfil.PerfilService;
 
 import jakarta.validation.Valid;
@@ -33,7 +33,7 @@ public class PerfilController {
     
     //Obtener lista completa de perfiles
     @GetMapping
-    public List<PerfilDto> getAllPerfils(){
+    public List<Perfil> getAllPerfils(){
         log.info("GET /perfiles");
         log.info("Retornando lista de perfiles");
         return perfilService.getAllPerfiles();
@@ -56,7 +56,7 @@ public class PerfilController {
     //---------MÉTODOS POST---------//
     //Crear perfil
     @PostMapping
-    public ResponseEntity<Object> createPerfil(@RequestBody @Valid PerfilDto perfil){
+    public ResponseEntity<Object> createPerfil(@RequestBody @Valid Perfil perfil){
         log.info("POST /perfiles/createPerfil");
         log.info("Creando perfil...");
 
@@ -71,7 +71,7 @@ public class PerfilController {
     //---------MÉTODOS PUT---------//
     //Actualizar perfil
     @PutMapping("/{id}")
-    public ResponseEntity<Object> updatePerfil(@PathVariable Integer id, @RequestBody @Valid PerfilDto perfilDto){
+    public ResponseEntity<Object> updatePerfil(@PathVariable Integer id, @RequestBody @Valid Perfil perfilDto){
         log.info("PUT /perfiles/"+id);
         log.info("Actualizando perfil con id " + id);
         var response = perfilService.updatePerfil(id, perfilDto);

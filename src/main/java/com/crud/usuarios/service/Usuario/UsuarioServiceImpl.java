@@ -2,30 +2,24 @@ package com.crud.usuarios.service.Usuario;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.crud.usuarios.model.dto.ResponseModel;
-import com.crud.usuarios.model.dto.UsuarioDto;
 import com.crud.usuarios.model.entities.Usuario;
 import com.crud.usuarios.repository.Usuario.UsuarioRepository;
-import com.crud.usuarios.utilities.UsuarioMapper;
 
 
 @Service
 public class UsuarioServiceImpl implements UsuarioService {
     @Autowired
     private UsuarioRepository usuarioRepository;
-    @Autowired
-    private UsuarioMapper usuarioMapper;
 
     //---------GET---------//
     @Override
-    public List<UsuarioDto> getAllUsuarios(){
-        List<Usuario> usuarios = usuarioRepository.findAll();
-        return usuarios.stream().map(usuarioMapper::convertirADTO).collect(Collectors.toList());
+    public List<Usuario> getAllUsuarios(){
+        return usuarioRepository.findAll();
     }
 
     @Override
@@ -35,11 +29,8 @@ public class UsuarioServiceImpl implements UsuarioService {
 
     //---------POST---------//
     @Override
-    public UsuarioDto createUsuario(UsuarioDto usuarioDto){
-        Usuario usuario = usuarioMapper.convertirAEntity(usuarioDto);//Mapeo
-        var resultado = usuarioRepository.save(usuario);
-        UsuarioDto response = usuarioMapper.convertirADTO(resultado);
-        return response;
+    public Usuario createUsuario(Usuario usuario){
+        return usuarioRepository.save(usuario);
     }
 
     @Override
@@ -80,22 +71,21 @@ public class UsuarioServiceImpl implements UsuarioService {
 
     //---------PUT---------//
     @Override
-    public UsuarioDto updateUsuario(Integer id, UsuarioDto usuarioDto){
+    public Usuario updateUsuario(Integer id, Usuario objUsuario){
         var usuarioExiste = usuarioRepository.findById(id);
         if (!usuarioExiste.isEmpty()) {
             Usuario usuario = usuarioExiste.get();
-            usuario.setApellidoMaterno(usuarioDto.getApellidoMaterno());
-            usuario.setApellidoPaterno(usuarioDto.getApellidoPaterno());
-            usuario.setDireccion(usuarioDto.getDireccion());
-            usuario.setEmail(usuarioDto.getEmail());
-            usuario.setNombre(usuarioDto.getNombre());
-            usuario.setPerfil(usuarioDto.getPerfil());
-            usuario.setTelefono(usuarioDto.getTelefono());
-            usuario.setcontrasena(usuarioDto.getContrasena());
+            usuario.setApellidoMaterno(objUsuario.getApellidoMaterno());
+            usuario.setApellidoPaterno(objUsuario.getApellidoPaterno());
+            usuario.setDireccion(objUsuario.getDireccion());
+            usuario.setEmail(objUsuario.getEmail());
+            usuario.setNombre(objUsuario.getNombre());
+            usuario.setPerfil(objUsuario.getPerfil());
+            usuario.setTelefono(objUsuario.getTelefono());
+            usuario.setcontrasena(objUsuario.getcontrasena());
             usuario.setIdUsuario(id);
             //Actualizar usuario
-            var resultado = usuarioRepository.save(usuario);
-            return usuarioMapper.convertirADTO(resultado);
+            return usuarioRepository.save(usuario);
         }else{
             return null;
         }
