@@ -9,7 +9,6 @@ import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,12 +19,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.crud.usuarios.advice.BusinessException;
-import com.crud.usuarios.advice.UsuarioNotFoundException;
-import com.crud.usuarios.advice.UsuarioUnauthorizedException;
+import com.crud.usuarios.advice.GeneralNotFoundException;
 import com.crud.usuarios.model.dto.LoginDto;
 import com.crud.usuarios.model.dto.ResponseModel;
 import com.crud.usuarios.model.dto.UsuarioDto;
-import com.crud.usuarios.model.entities.Usuario;
 import com.crud.usuarios.service.Usuario.UsuarioService;
 import com.crud.usuarios.utilities.UsuarioMapper;
 
@@ -40,19 +37,10 @@ public class UsuarioController {
     private static final Logger log = LoggerFactory.getLogger(UsuarioController.class);
     @Autowired
     private UsuarioService usuarioService;
-        @Autowired
+    @Autowired
     private UsuarioMapper usuarioMapper;
 
     //---------MÉTODOS GET---------//
-    
-    //Obtener lista completa de usuarios
-    // @GetMapping
-    // public List<UsuarioDto> getAllUsuarios(){
-    //     log.info("GET /usuarios");
-    //     log.info("Retornando lista de usuarios");
-    //     return usuarioService.getAllUsuarios();
-    // }
-
     @GetMapping
     public CollectionModel<EntityModel<UsuarioDto>> getAllUsuarios() {
         List<UsuarioDto> usuarios = usuarioService.getAllUsuarios();
@@ -69,26 +57,14 @@ public class UsuarioController {
 
         return resources;
     }
-    //Obtener usuario por su id
-    // @GetMapping("/{id}")
-    // public ResponseEntity<Object> getUsuarioById(@PathVariable Integer id){
-    //     log.info("GET /usuarios/" + id);
-    //     log.info("Obteniendo usuario por id " + id);
-    //     var response = usuarioService.getUsuarioById(id);
-    //     if (response.isEmpty()) {
-    //         log.error("No se encontro usuario con id " + id);
-    //         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseModel(false,"El usuario ingresado no existe."));
-    //     }
-    //     log.info("Usuario encontrado con éxito. Id: " + id);
-    //     return ResponseEntity.ok(response);
-    // }
+
     @GetMapping("/{id}")
     public EntityModel<UsuarioDto> getUsuarioById(@PathVariable Integer id){
         log.info("GET /usuarios/" + id);
         log.info("Obteniendo usuario por id " + id);
         var usuario = usuarioService.getUsuarioById(id);
 
-        if (usuario.isPresent()) {
+        if (!usuario.isEmpty()) {
             log.info("Usuario encontrado. Id " + id);
             var usuarioDto = usuarioMapper.convertirADTO(usuario.get());
             return EntityModel.of(usuarioDto,
@@ -96,23 +72,11 @@ public class UsuarioController {
                 WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(this.getClass()).getAllUsuarios()).withRel("all-usuarios"));
         } else {
             log.error("Usuario no encontrado. Id " + id);
-            throw new UsuarioNotFoundException(String.valueOf(id));
+            throw new GeneralNotFoundException(String.valueOf(id));
         }
     }
 
     //---------MÉTODOS POST---------//
-    //Crear usuario
-    // @PostMapping
-    // public ResponseEntity<Object> createUsuario(@RequestBody @Valid UsuarioDto usuario){
-    //     log.info("POST /usuarios/createUsuario");
-    //     log.info("Creando usuario...");
-
-    //     var response = usuarioService.createUsuario(usuario);
-
-    //     log.info(response.getMessage());
-    //     return ResponseEntity.status(HttpStatus.CREATED).body(response);
-    // }
-
     @PostMapping
     public EntityModel<UsuarioDto> createUsuario(@RequestBody @Valid UsuarioDto usuarioDto){
         log.info("POST /usuarios/createUsuario");
@@ -131,27 +95,6 @@ public class UsuarioController {
             WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(this.getClass()).getUsuarioById(response.getIdUsuario())).withRel("get-usuario-by-id"));
 
     }
-
-    //Login usuario
-    // @PostMapping("/login")
-    // public ResponseEntity<Object> login(@RequestBody @Valid LoginDto loginDto) {
-    //     log.info("POST /usuarios/login");
-    //     log.info("Inicio login...");
-    //     String email = loginDto.getEmail();
-    //     String password = loginDto.getContrasena();
-
-    //     //Validar el usuario y contraseña
-    //     ResponseModel response = usuarioService.validarLogin(email, password);
-    //     if (response.getStatus()) {
-    //         log.info("Login realizado con exito. Email " + email);
-    //         log.info("Fin login.");
-    //         return ResponseEntity.status(HttpStatus.OK).body(response);
-    //     }else{
-    //         log.error(response.getMessage());
-    //         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
-    //     }
-    // }
-
     //Login usuario
     @PostMapping("/login")
     public ResponseEntity<Object> login(@RequestBody @Valid LoginDto loginDto) {
@@ -175,18 +118,6 @@ public class UsuarioController {
 
     //---------MÉTODOS PUT---------//
     //Actualizar usuario
-    // @PutMapping("/{id}")
-    // public ResponseEntity<Object> updateUsuario(@PathVariable Integer id, @RequestBody @Valid UsuarioDto usuarioDto){
-    //     log.info("PUT /usuarios/"+id);
-    //     log.info("Actualizando usuario con id " + id);
-    //     var response = usuarioService.updateUsuario(id, usuarioDto);
-    //     if (response == null) {
-    //         log.error("No existe un usuario con id " + id);
-    //         return ResponseEntity.status(HttpStatus.OK).body(new ResponseModel(false,"El usuario ingresado no existe."));
-    //     }
-    //     log.info("Usuario actualizado con éxito. Id " + id);
-    //     return ResponseEntity.status(HttpStatus.OK).body(response);
-    // }
     @PutMapping("/{id}")
     public EntityModel<UsuarioDto> updateUsuario(@PathVariable Integer id, @RequestBody @Valid UsuarioDto usuarioDto){
         log.info("PUT /usuarios/"+id);
@@ -195,7 +126,7 @@ public class UsuarioController {
         var response = usuarioService.updateUsuario(id, usuarioDto);
         if (response == null) {
             log.error("Usuario no encontrado. Id " + id);
-            throw new UsuarioNotFoundException(String.valueOf(id));
+            throw new GeneralNotFoundException(String.valueOf(id));
         }
         log.info("Usuario creado con exito. Id: " + response.getIdUsuario());
         return EntityModel.of(response,
@@ -215,6 +146,7 @@ public class UsuarioController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
         log.info("Usuario eliminado con éxito");
-        return ResponseEntity.status(HttpStatus.OK).body(response);
+        return ResponseEntity.status(HttpStatus.OK).body(EntityModel.of(response,
+            WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(this.getClass()).deleteUsuario(id)).withSelfRel())); 
     }
 }

@@ -1,13 +1,12 @@
 package com.crud.usuarios.advice;
 
-
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-@ResponseStatus(HttpStatus.NOT_FOUND)
-public class UsuarioNotFoundException extends RuntimeException {
+@ResponseStatus(HttpStatus.UNAUTHORIZED)
+public class GeneralUnauthorizedException extends RuntimeException {
     
-    public UsuarioNotFoundException(String message) {
+    public GeneralUnauthorizedException(String message) {
         super(message);
     }
 

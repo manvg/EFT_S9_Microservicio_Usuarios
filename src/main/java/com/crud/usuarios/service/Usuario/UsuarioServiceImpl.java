@@ -7,14 +7,12 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.crud.usuarios.advice.UsuarioNotFoundException;
 import com.crud.usuarios.model.dto.ResponseModel;
 import com.crud.usuarios.model.dto.UsuarioDto;
 import com.crud.usuarios.model.entities.Usuario;
 import com.crud.usuarios.repository.Usuario.UsuarioRepository;
 import com.crud.usuarios.utilities.UsuarioMapper;
 
-import io.micrometer.core.ipc.http.HttpSender.Response;
 
 @Service
 public class UsuarioServiceImpl implements UsuarioService {

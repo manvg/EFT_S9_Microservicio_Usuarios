@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 //Capturar errores
 @RestControllerAdvice
-public class UsuarioExcepcionHandler {
+public class GeneralExcepcionHandler {
     //Metodo que retorna errores
     @ExceptionHandler(MethodArgumentNotValidException.class)//Cuando se produzca esta excepcion se dispara el método
     public Map<String, String> handleInvalidArguments(MethodArgumentNotValidException exception){
@@ -31,16 +31,16 @@ public class UsuarioExcepcionHandler {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseModel(false, ex.getMessage()));
     }
     
-    @ExceptionHandler(UsuarioNotFoundException.class)
+    @ExceptionHandler(GeneralNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ResponseEntity<ResponseModel> handleUsuarioNotFoundException(UsuarioNotFoundException ex) {
+    public ResponseEntity<ResponseModel> handleUsuarioNotFoundException(GeneralNotFoundException ex) {
         String errorMessage = "Usuario no encontrado: " + ex.getMessage();
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseModel(false, errorMessage));
     }
 
-    @ExceptionHandler(UsuarioUnauthorizedException.class)
+    @ExceptionHandler(GeneralUnauthorizedException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    public ResponseEntity<ResponseModel> handleUnauthorizedException(UsuarioUnauthorizedException ex) {
+    public ResponseEntity<ResponseModel> handleUnauthorizedException(GeneralUnauthorizedException ex) {
         String errorMessage = "Acceso no autorizado: " + ex.getMessage();
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseModel(false, errorMessage));
     }
