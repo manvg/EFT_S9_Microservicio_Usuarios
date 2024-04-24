@@ -27,7 +27,14 @@ public class UsuarioExcepcionHandler {
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ResponseEntity<ResponseModel> handleInternalServerError(Exception ex) {
-        String errorMessage = "Error interno del servidor: " + ex.getMessage();
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseModel(false, errorMessage));
+        //String errorMessage = "Error interno del servidor: " + ex.getMessage();
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseModel(false, ex.getMessage()));
+    }
+    
+    @ExceptionHandler(UsuarioNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ResponseEntity<ResponseModel> handleUsuarioNotFoundException(UsuarioNotFoundException ex) {
+        String errorMessage = "Usuario no encontrado: " + ex.getMessage();
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseModel(false, errorMessage));
     }
 }
