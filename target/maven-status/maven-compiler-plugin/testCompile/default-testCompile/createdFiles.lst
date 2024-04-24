@@ -1,0 +1,3 @@
+com\crud\usuarios\service\UsuarioServiceTest.class
+com\crud\usuarios\UsuariosApplicationTests.class
+com\crud\usuarios\controller\UsuarioControllerTest.class
