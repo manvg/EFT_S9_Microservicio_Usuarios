@@ -7,11 +7,14 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.crud.usuarios.advice.UsuarioNotFoundException;
 import com.crud.usuarios.model.dto.ResponseModel;
 import com.crud.usuarios.model.dto.UsuarioDto;
 import com.crud.usuarios.model.entities.Usuario;
 import com.crud.usuarios.repository.Usuario.UsuarioRepository;
 import com.crud.usuarios.utilities.UsuarioMapper;
+
+import io.micrometer.core.ipc.http.HttpSender.Response;
 
 @Service
 public class UsuarioServiceImpl implements UsuarioService {
@@ -34,14 +37,26 @@ public class UsuarioServiceImpl implements UsuarioService {
 
     //---------POST---------//
     @Override
-    public ResponseModel createUsuario(UsuarioDto usuarioDto){
-        var existeEmail = usuarioRepository.findByemail(usuarioDto.getEmail());
-        if (!existeEmail.isEmpty()) {
-            return new ResponseModel(false, "Ya existe un usuario con el email '" + usuarioDto.getEmail()+ "'");
-        }
+    public UsuarioDto createUsuario(UsuarioDto usuarioDto){
         Usuario usuario = usuarioMapper.convertirAEntity(usuarioDto);//Mapeo
         var resultado = usuarioRepository.save(usuario);
-        return new ResponseModel(true, "Usuario creado con éxito. Id: " + resultado.getIdUsuario());
+        UsuarioDto response = usuarioMapper.convertirADTO(resultado);
+        return response;
+    }
+
+    @Override
+    public ResponseModel validarUsuarioPorEmail(String email){
+        String message = "";
+        boolean status = false;
+
+        var existeEmail = usuarioRepository.findByemail(email);
+        if (!existeEmail.isEmpty()) {
+            message = "Ya existe un usuario con el email '" + email+ "'";
+        }else{
+            message = "Puede continuar con la creación del usuario.";
+            status = true;
+        }
+        return new ResponseModel(status, message);
     }
 
     @Override
@@ -67,7 +82,7 @@ public class UsuarioServiceImpl implements UsuarioService {
 
     //---------PUT---------//
     @Override
-    public ResponseModel updateUsuario(Integer id, UsuarioDto usuarioDto){
+    public UsuarioDto updateUsuario(Integer id, UsuarioDto usuarioDto){
         var usuarioExiste = usuarioRepository.findById(id);
         if (!usuarioExiste.isEmpty()) {
             Usuario usuario = usuarioExiste.get();
@@ -82,9 +97,9 @@ public class UsuarioServiceImpl implements UsuarioService {
             usuario.setIdUsuario(id);
             //Actualizar usuario
             var resultado = usuarioRepository.save(usuario);
-            return new ResponseModel(true, "Usuario actualizado con éxito. Id: " + resultado.getIdUsuario());
+            return usuarioMapper.convertirADTO(resultado);
         }else{
-            return new ResponseModel(false, "El usuario ingresado no existe. Id: " + id);
+            return null;
         }
     }
 
