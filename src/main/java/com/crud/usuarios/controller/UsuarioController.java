@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.crud.usuarios.advice.BusinessException;
 import com.crud.usuarios.advice.UsuarioNotFoundException;
+import com.crud.usuarios.advice.UsuarioUnauthorizedException;
 import com.crud.usuarios.model.dto.LoginDto;
 import com.crud.usuarios.model.dto.ResponseModel;
 import com.crud.usuarios.model.dto.UsuarioDto;
@@ -132,6 +133,26 @@ public class UsuarioController {
     }
 
     //Login usuario
+    // @PostMapping("/login")
+    // public ResponseEntity<Object> login(@RequestBody @Valid LoginDto loginDto) {
+    //     log.info("POST /usuarios/login");
+    //     log.info("Inicio login...");
+    //     String email = loginDto.getEmail();
+    //     String password = loginDto.getContrasena();
+
+    //     //Validar el usuario y contraseña
+    //     ResponseModel response = usuarioService.validarLogin(email, password);
+    //     if (response.getStatus()) {
+    //         log.info("Login realizado con exito. Email " + email);
+    //         log.info("Fin login.");
+    //         return ResponseEntity.status(HttpStatus.OK).body(response);
+    //     }else{
+    //         log.error(response.getMessage());
+    //         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+    //     }
+    // }
+
+    //Login usuario
     @PostMapping("/login")
     public ResponseEntity<Object> login(@RequestBody @Valid LoginDto loginDto) {
         log.info("POST /usuarios/login");
@@ -143,11 +164,12 @@ public class UsuarioController {
         ResponseModel response = usuarioService.validarLogin(email, password);
         if (response.getStatus()) {
             log.info("Login realizado con exito. Email " + email);
-            log.info("Fin login.");
-            return ResponseEntity.status(HttpStatus.OK).body(response);
+            return ResponseEntity.status(HttpStatus.OK).body(EntityModel.of(response,
+            WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(this.getClass()).login(loginDto)).withSelfRel())); 
         }else{
             log.error(response.getMessage());
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(EntityModel.of(response,
+            WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(this.getClass()).login(loginDto)).withSelfRel())); 
         }
     }
 

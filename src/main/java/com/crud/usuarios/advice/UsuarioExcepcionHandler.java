@@ -37,4 +37,11 @@ public class UsuarioExcepcionHandler {
         String errorMessage = "Usuario no encontrado: " + ex.getMessage();
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseModel(false, errorMessage));
     }
+
+    @ExceptionHandler(UsuarioUnauthorizedException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public ResponseEntity<ResponseModel> handleUnauthorizedException(UsuarioUnauthorizedException ex) {
+        String errorMessage = "Acceso no autorizado: " + ex.getMessage();
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseModel(false, errorMessage));
+    }
 }
