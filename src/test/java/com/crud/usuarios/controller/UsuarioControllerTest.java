@@ -24,12 +24,11 @@ public class UsuarioControllerTest {
     @MockBean
     private UsuarioService usuarioServiceMock;
 
-
-
     private Usuario usuario1;
     private Usuario usuario2;
     private Perfil perfil1;
     private Perfil perfil2;
+    
     @BeforeEach
     public void InicializarPruebas(){
         //Inicializa perfiles de prueba
