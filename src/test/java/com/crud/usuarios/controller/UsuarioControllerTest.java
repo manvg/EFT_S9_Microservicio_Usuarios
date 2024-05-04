@@ -16,8 +16,9 @@ import com.crud.usuarios.model.entities.Perfil;
 import com.crud.usuarios.model.entities.Usuario;
 import com.crud.usuarios.service.Usuario.UsuarioService;
 
-@WebMvcTest(UsuarioController.class)
+@WebMvcTest(UsuarioController.class)//Referencia al controlador principal de usuarios
 public class UsuarioControllerTest {
+    //Configuraciones de los Mocks para simular las solicitudes HTTP al controlador
     @Autowired
     private MockMvc mockMvc;
 
@@ -29,6 +30,7 @@ public class UsuarioControllerTest {
     private Perfil perfil1;
     private Perfil perfil2;
     
+    //Se ejecuta antes de cada metodo de pruebas
     @BeforeEach
     public void InicializarPruebas(){
         //Inicializa perfiles de prueba
@@ -65,7 +67,7 @@ public class UsuarioControllerTest {
 
     }
     @Test
-    @DisplayName("Obtener todos los usuarios => Respuesta correcta")
+    @DisplayName("Obtener todos los usuarios => Respuesta correcta 200 OK")
     public void getAllUsuariosTest() throws Exception{
 
         List<Usuario> usuarios = List.of(usuario1, usuario2);

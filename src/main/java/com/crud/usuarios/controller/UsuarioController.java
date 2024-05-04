@@ -43,14 +43,14 @@ public class UsuarioController {
         List<Usuario> usuarios = usuarioService.getAllUsuarios();
         log.info("GET /usuarios");
         log.info("Retornando todos los usuarios");
-        List<EntityModel<Usuario>> usuariosResources = usuarios.stream()
+        List<EntityModel<Usuario>> usuariosResources = usuarios.stream()//Mapea lista de usuarios
             .map( usuario -> EntityModel.of(usuario,
-                WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(this.getClass()).getUsuarioById(usuario.getIdUsuario())).withSelfRel()
+                WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(this.getClass()).getUsuarioById(usuario.getIdUsuario())).withSelfRel()//Genera link relacionado a obtención de usuario por id
             ))
             .collect(Collectors.toList());
-
-        WebMvcLinkBuilder linkTo = WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(this.getClass()).getAllUsuarios());
-        CollectionModel<EntityModel<Usuario>> resources = CollectionModel.of(usuariosResources, linkTo.withRel("usuarios"));
+        //Generar enlaces HATEOAS
+        WebMvcLinkBuilder linkTo = WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(this.getClass()).getAllUsuarios());//Apunta su mismo método 
+        CollectionModel<EntityModel<Usuario>> resources = CollectionModel.of(usuariosResources, linkTo.withRel("usuarios"));//Genera lista de EntityModel de usuarios el enlace a la colección de usuarios
 
         return resources;
     }
@@ -64,8 +64,8 @@ public class UsuarioController {
         if (!usuario.isEmpty()) {
             log.info("Usuario encontrado. Id " + id);
             return EntityModel.of(usuario.get(),
-                WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(this.getClass()).getUsuarioById(id)).withSelfRel(),
-                WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(this.getClass()).getAllUsuarios()).withRel("all-usuarios"));
+                WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(this.getClass()).getUsuarioById(id)).withSelfRel(),//Link obtener usuario por id
+                WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(this.getClass()).getAllUsuarios()).withRel("all-usuarios"));//Link para obtener todos los usuarios, etiquetado con la relación all-usuarios
         } else {
             log.error("Usuario no encontrado. Id " + id);
             throw new GeneralNotFoundException(String.valueOf(id));
@@ -87,8 +87,8 @@ public class UsuarioController {
         var response = usuarioService.createUsuario(usuario);
         log.info("Usuario creado con exito. Id: " + response.getIdUsuario());
         return EntityModel.of(response,
-            WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(this.getClass()).createUsuario(usuario)).withSelfRel(),
-            WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(this.getClass()).getUsuarioById(response.getIdUsuario())).withRel("get-usuario-by-id"));
+            WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(this.getClass()).createUsuario(usuario)).withSelfRel(),//Link a sí mismo
+            WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(this.getClass()).getUsuarioById(response.getIdUsuario())).withRel("get-usuario-by-id"));//Link  obteción del usuario por su id
 
     }
     //Login usuario

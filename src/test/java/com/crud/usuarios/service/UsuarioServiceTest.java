@@ -19,6 +19,7 @@ import com.crud.usuarios.service.Usuario.UsuarioServiceImpl;
 
 @ExtendWith(MockitoExtension.class)
 public class UsuarioServiceTest {
+    //Configuraciones de los Mocks para simular las solicitudes
     @InjectMocks
     private UsuarioServiceImpl usuarioService;
 
